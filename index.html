@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Hello World!</title>
+<style>
+#main{
+	width:500px;
+	height:500px;
+	border:1px solid #ccc;
+}
+</style>
+</head>
+<body>
+<h1></h1>
+<div id="main">
+</div>
+
+<script>
+	var main = document.getElementById('main')
+	var fs = require('fs')
+
+	main.addEventListener('dragover', function(e){
+		if(e.preventDefault){
+			e.preventDefault()
+		}
+	}, false)
+	main.addEventListener('dragenter', function(e){
+		if(e.preventDefault){
+			e.preventDefault()
+		}
+	}, false)
+	main.addEventListener('drop', function(e){
+		if(e.preventDefault){
+			e.preventDefault()
+		}
+
+		var dt = e.dataTransfer
+
+		console.dir(e)
+
+		var files = dt.files
+
+		for(var i = 0; i < files.length; i++){
+			var file = files[i]
+			console.log(file.path)
+			console.dir(getAllFiles(file.path))
+		}
+	}, false)
+
+	function getAllFiles(root){
+		var res = [],
+			files = fs.readdirSync(root)
+
+		files.forEach(function(file){
+			var pathname = root + '/' + file
+			var stat = fs.lstatSync(pathname)
+
+			if(stat.isDirectory()){
+				res.concat(getAllFiles(pathname))
+			}
+			else{
+				res.push(pathname)
+			}
+		})
+
+		return res
+	}
+</script>
+</body>
+</html>
